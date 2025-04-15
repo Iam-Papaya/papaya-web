@@ -106,7 +106,7 @@
     .left-nav a, .right-nav a {
       color: var(--color-white-bone);
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 1.2rem;
       font-family: var(--font-heading);
       display: flex;
       align-items: center;

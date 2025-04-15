@@ -1,5 +1,17 @@
 <script>
-    // Importaremos más componentes (moléculas, organismos) aquí
+      import Carousel from '$lib/components/organisms/Carusel.svelte';
+
+const phrases = [
+  "Nostalgia Reimagined",
+  "Diseño con Alma",
+  "Coleccionables Únicos",
+  "Rubber Hose Revival",
+  "Ediciones Limitadas",
+  "Para el Niño Interior",
+  "¡Nunca Dejes de Jugar!",
+  "Papaya te Inspira",
+  "Descubre la Colección",
+];
     function handleScroll() {
       // Aquí puedes añadir lógica para el carrusel inferior cuando el video termine
     }
@@ -18,6 +30,10 @@
     </div>
   </section>
   
+  <section class="phrase-carousel">
+    <Carousel items={phrases}  />
+  </section>
+
   <svelte:window on:scroll={handleScroll} />
   
   <style>
@@ -28,13 +44,21 @@
   
     .hero-content {
       max-width: 800px;
-      margin: 0 auto;
+      margin: 0;
     }
   
     .video-placeholder {
-      background-color: #ccc; /* Placeholder visual */
+      background-color: #ccc; 
       width: 100%;
-      height: 650px;
+      height: 720px;
+      width: 1280px;
     }
+
+    .phrase-carousel {
+    padding: 0.5 rem;
+    text-align: center;
+    background-color: var(--color-grey-charcoal-light);
+    color: var(--color-white-bone);
+  }
   </style>
 

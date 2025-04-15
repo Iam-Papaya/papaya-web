@@ -4,10 +4,10 @@
   
   <footer class="footer">
     <div class="social-links">
-      <a href="#"><Icon icon="cib:youtube" /></a>
+      <a href="https://www.youtube.com/@iam_papaya"><Icon icon="cib:youtube" /></a>
       <a href="#"><Icon icon="cib:instagram" /></a>
       <a href="#"><Icon icon="cib:etsy" /></a>
-      <a href="#"><Icon icon="cib:twitter" /></a>
+      <a href="https://x.com/_iampapaya"><Icon icon="cib:twitter" /></a>
       <a href="#"><Icon icon="cib:mail" /></a>
     </div>
     <p class="copyright">
@@ -35,11 +35,6 @@
   
     .social-links a:hover {
       opacity: 0.8;
-    }
-  
-    .social-links svg {
-      width: 1.5em; /* Controla el tamaño del icono SVG */
-      height: 1.5em;
     }
   
     .copyright {
