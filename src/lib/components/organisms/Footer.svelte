@@ -21,6 +21,7 @@
       color: var(--color-white-bone);
       padding: 1rem;
       text-align: center;
+      margin: 0;
     }
   
     .social-links a {

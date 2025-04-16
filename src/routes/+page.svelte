@@ -1,64 +1,113 @@
-<script>
-      import Carousel from '$lib/components/organisms/Carusel.svelte';
+<script lang="ts">
+  import Carousel from '$lib/components/organisms/Carusel.svelte';
+  import Button from '$lib/components/atoms/Button.svelte';
 
-const phrases = [
-  "Nostalgia Reimagined",
-  "Diseño con Alma",
-  "Coleccionables Únicos",
-  "Rubber Hose Revival",
-  "Ediciones Limitadas",
-  "Para el Niño Interior",
-  "¡Nunca Dejes de Jugar!",
-  "Papaya te Inspira",
-  "Descubre la Colección",
-];
-    function handleScroll() {
-      // Aquí puedes añadir lógica para el carrusel inferior cuando el video termine
-    }
-  </script>
-  
-  <svelte:head>
-    <title>PAPAYA - NEVER STOP PLAYING</title>
-    <meta name="description" content="Juguetes coleccionables para adultos con estética Rubber Hose.">
-  </svelte:head>
-  
-  <section class="hero">
-    <div class="hero-content">
-      <div class="video-placeholder">
-        [Aquí irá el reproductor de video o la imagen de carga]
-      </div>
-    </div>
-  </section>
-  
-  <section class="phrase-carousel">
-    <Carousel items={phrases}  />
-  </section>
+  const phrases = [
+    "Nostalgia Reimagined",
+    "Diseño con Alma",
+    "Coleccionables Únicos",
+    "Ediciones Limitadas",
+    "¡Nunca Dejes de Jugar!",
+    "Descubre la Colección",
+  ];
 
-  <svelte:window on:scroll={handleScroll} />
-  
-  <style>
-    .hero {
-      background-color: var(--color-grey-charcoal-light);
-      text-align: center;
-    }
-  
-    .hero-content {
-      max-width: 800px;
-      margin: 0;
-    }
-  
-    .video-placeholder {
-      background-color: #ccc; 
-      width: 100%;
-      height: 720px;
-      width: 1280px;
-    }
+  let videoRef: HTMLVideoElement | null = null;
+  let videoEnded = false;
 
-    .phrase-carousel {
-    padding: 0.5 rem;
-    text-align: center;
-    background-color: var(--color-grey-charcoal-light);
-    color: var(--color-white-bone);
+  function handleVideoEnded() {
+    videoEnded = true; // Establece que el video ha terminado
   }
-  </style>
 
+  function restartVideo() {
+  if (videoRef) {
+    videoRef.currentTime = 0; // Reinicia el video
+    videoRef.play(); // Reproduce el video nuevamente
+  }
+  videoEnded = false; // Reinicia el estado del video
+}
+
+
+  function handleScroll() {
+    // Aquí puedes añadir lógica para el carrusel inferior cuando el video termine
+  }
+</script>
+
+<svelte:head>
+  <title>PAPAYA - NEVER STOP PLAYING</title>
+  <meta name="description" content="Juguetes coleccionables para adultos con estética Rubber Hose.">
+</svelte:head>
+
+<section class="hero">
+  <div class="hero-content">
+      <!-- Agrega el video aquí -->
+      <video
+        bind:this={videoRef}
+        src="/videos/herovideo.mkv"
+        autoplay
+        muted
+        playsinline
+        on:ended={handleVideoEnded}
+        class="hero-video">
+      </video>
+  </div>
+</section>
+
+<section class="phrase-carousel">
+  <Carousel items={phrases} />
+</section>
+
+{#if videoEnded}
+  <div class="video-overlay">
+    <Button on:click={restartVideo} >Reiniciar Video</Button>
+  </div>
+{/if}
+
+<svelte:window on:scroll={handleScroll} />
+
+<style>
+.hero {
+  background-color: var(--color-white-bone);
+  text-align: center;
+  display: flex; /* Activamos flexbox */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
+}
+
+.hero-content {
+  max-width: 1280px; /* Limita el tamaño máximo */
+  margin: 0;
+}
+
+  .hero-video {
+    width: 100%;
+    height: 100%;
+    position: center;
+  }
+
+  video {
+  width: 100%; /* El video ocupa el 100% del contenedor */
+  height: auto; /* Mantiene la proporción del video */
+}
+
+section {
+  margin: 0;
+  padding: 0;
+}
+  .phrase-carousel {
+    margin: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+</style>

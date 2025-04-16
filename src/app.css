@@ -1,4 +1,10 @@
-/* src/app.css */
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #f0f8ff;
+}
+
 :root {
 	--color-grey-charcoal: #36454f;
 	--color-grey-charcoal-light: #708090;
@@ -13,40 +19,9 @@
 	--font-body: 'Lato', sans-serif; /* Asegúrate de importar la fuente */
 }
 
-button {
-	padding: 0.8rem 1.5rem;
-	border-radius: 5px;
-	cursor: pointer;
-	font-family: var(--font-body);
-	font-size: 1rem;
-	border: none;
-	transition: background-color 0.3s ease;
-}
-
-input[type='text'],
-input[type='email'],
-input[type='password'] {
-	padding: 0.6rem;
-	border: 1px solid var(--color-grey-charcoal-light);
-	border-radius: 3px;
-	font-family: var(--font-body);
-	font-size: 1rem;
-	width: 100%;
-	box-sizing: border-box;
-}
-
-input:focus {
-	outline: none;
-	border-color: var(--color-accent-primary);
-	box-shadow: 0 0 3px var(--color-accent-primary-light);
-}
-
-label {
-	display: block;
-	margin-bottom: 0.3rem;
-	font-family: var(--font-body);
-	font-size: 0.9rem;
-	color: var(--color-grey-charcoal);
+section {
+	margin: 0;
+	padding: 0;
 }
 
 h1 {
@@ -63,11 +38,6 @@ h2 {
 
 p {
 	/* ... */
-}
-
-i.fa {
-	font-size: 1.2rem;
-	color: var(--color-grey-charcoal);
 }
 
 /* Clases reutilizables para estilos comunes */
