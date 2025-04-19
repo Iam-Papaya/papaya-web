@@ -16,12 +16,8 @@
 
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
-    console.log('Menu toggled, isMenuOpen:', isMenuOpen);  // Verificar si el estado cambia
   }
 
-  $: {
-    console.log('isMenuOpen:', isMenuOpen);  // Comprobamos el valor de isMenuOpen cada vez que cambie
-  }
 </script>
 
 <header class="topbar">
