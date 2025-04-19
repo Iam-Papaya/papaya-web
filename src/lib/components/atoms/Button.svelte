@@ -11,7 +11,6 @@
   on:click={onClick}
   class="button {className}
          {primary ? 'button-primary' : ''}
-         {color === 'red' ? 'button-red' : ''}
          {color === 'yellow' ? 'button-yellow' : ''}"
 >
   <slot></slot>
@@ -29,6 +28,7 @@
     transition: background-color 0.3s ease;
     background-color: var(--color-accent-primary); /* Color por defecto */
     color: var(--color-white-bone); /* Color de texto por defecto */
+    z-index: 10;
   }
 
   .button:hover {

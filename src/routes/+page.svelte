@@ -14,19 +14,27 @@
 
   let videoRef: HTMLVideoElement | null = null;
   let videoEnded = false;
+  let forceUpdate = 0;
 
   function handleVideoEnded() {
     videoEnded = true; // Establece que el video ha terminado
   }
 
   function restartVideo() {
-  if (videoRef) {
-    videoRef.currentTime = 0; // Reinicia el video
-    videoRef.play(); // Reproduce el video nuevamente
+    if (videoRef) {
+      console.log('Función restartVideo llamada');
+      videoRef.pause();
+      videoRef.currentTime = 0;
+      videoRef.play();
+      forceUpdate += 1; // Actualiza la variable para forzar la re-renderización
+      console.log('currentTime después de play:', videoRef.currentTime);
+      console.log('paused después de play:', videoRef.paused);
+    }
+    videoEnded = false;
   }
-  videoEnded = false; // Reinicia el estado del video
-}
-
+  function handlePapayoClick() {
+    goto('/papayo');
+  }
 
   function handleScroll() {
     // Aquí puedes añadir lógica para el carrusel inferior cuando el video termine
@@ -37,7 +45,7 @@
   <title>PAPAYA - NEVER STOP PLAYING</title>
   <meta name="description" content="Juguetes coleccionables para millenials.">
 </svelte:head>
-
+{#key forceUpdate}
 <section class="hero">
   <div class="hero-content">
     <video
@@ -60,14 +68,15 @@
     ></video>
   </div>
 </section>
-
+{/key}
 <section class="phrase-carousel">
   <Carousel items={phrases} />
 </section>
 
 {#if videoEnded}
   <div class="video-overlay">
-    <Button on:click={restartVideo} >Reiniciar Video</Button>
+    <Button onClick={handlePapayoClick} >Descubre a Papayo</Button>
+    <Button onClick={restartVideo} color="yellow">Reiniciar Video</Button>
   </div>
 {/if}
 
@@ -116,7 +125,7 @@ section {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 6px;
   }
   .desktop-video {
     display: block;
