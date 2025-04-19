@@ -4,8 +4,8 @@
   </script>
   
   <div class="customizer-page">
-    <Customizer3D />
     <PartSelector />
+    <Customizer3D />
   </div>
   
   <style>
