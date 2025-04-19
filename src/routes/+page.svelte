@@ -1,6 +1,7 @@
 <script lang="ts">
   import Carousel from '$lib/components/organisms/Carusel.svelte';
   import Button from '$lib/components/atoms/Button.svelte';
+  import { goto } from '$app/navigation';
 
   const phrases = [
     "Nostalgia Reimagined",
@@ -34,21 +35,29 @@
 
 <svelte:head>
   <title>PAPAYA - NEVER STOP PLAYING</title>
-  <meta name="description" content="Juguetes coleccionables para adultos con estética Rubber Hose.">
+  <meta name="description" content="Juguetes coleccionables para millenials.">
 </svelte:head>
 
 <section class="hero">
   <div class="hero-content">
-      <!-- Agrega el video aquí -->
-      <video
-        bind:this={videoRef}
-        src="/videos/herovideo.mkv"
-        autoplay
-        muted
-        playsinline
-        on:ended={handleVideoEnded}
-        class="hero-video">
-      </video>
+    <video
+      bind:this={videoRef}
+      src="/videos/herovideo.mkv"
+      autoplay
+      muted
+      playsinline
+      on:ended={handleVideoEnded}
+      class="hero-video desktop-video"
+    ></video>
+    <video
+      bind:this={videoRef}
+      src="/videos/herovideoV.mkv"
+      autoplay
+      muted
+      playsinline
+      on:ended={handleVideoEnded}
+      class="hero-video mobile-video"
+    ></video>
   </div>
 </section>
 
@@ -109,5 +118,21 @@ section {
     padding: 1rem;
     border-radius: 8px;
   }
+  .desktop-video {
+    display: block;
+  }
 
+  .mobile-video {
+    display: none;
+  }
+
+  @media (max-width: 1199px) {
+    .desktop-video {
+      display: none;
+    }
+
+    .mobile-video {
+      display: block;
+    }
+  }
 </style>

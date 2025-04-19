@@ -5,7 +5,7 @@
 
   const menuItems = [
     { text: 'Home', href: '/' },
-    { text: 'Colecciones', href: '/colecciones' },
+    { text: 'Papayo', href: '/papayo' },
     { text: '¿Qué es Papaya?', href: '/sobre-nosotros' },
     { text: 'Contacto', href: '/contacto' },
   ];
@@ -82,6 +82,12 @@
     align-items: center;
   }
 
+  .desktop-menu {
+  width: 100%; /* Asegúrate de que ocupe el ancho completo */
+margin-top: 0;  /* Asegúrate de que no haya margen superior */
+  /* margin-bottom: 0; */ /* Asegúrate de que no haya margen inferior */
+}
+
   .logo-container {
     position: absolute;
     top: 10px;
@@ -108,7 +114,7 @@
 
   /* Menú de escritorio */
   .desktop-menu .topbar-content {
-    background-color: var(--color-white-bone);
+    background-color: var(--color-accent-primary);
     padding: 0rem;
     display: flex;
     justify-content: space-between;
@@ -121,21 +127,21 @@
   .desktop-menu .left-nav ul, .desktop-menu .right-nav ul {
     list-style: none;
     padding: 0;
-    margin: 0 15rem;
+    margin: 0 10rem;
     display: flex;
     align-items: center;
     height: 100%;
   }
 
   .desktop-menu .left-nav li, .desktop-menu .right-nav li {
-    margin: 0 1rem;
+    margin: 0 5rem;
     display: flex;
     align-items: center;
     height: 100%;
   }
 
   .desktop-menu .left-nav a, .desktop-menu .right-nav a {
-    color: var(--color-accent-primary);
+    color: var(--color-white-bone);
     text-decoration: none;
     font-size: 1.4rem;
     font-family: var(--font-heading);
@@ -145,7 +151,7 @@
   }
 
   .desktop-menu .left-nav a:hover, .desktop-menu .right-nav a:hover {
-    color: var(--color-accent-primary-light)
+    color: var(--color-accent-secondary)
   }
 
   /* Menú hamburguesa (móvil) */
@@ -203,7 +209,7 @@
   }
 
   /* En pantallas más grandes que 768px, ocultar el menú hamburguesa */
-  @media (max-width: 768px) {
+  @media (max-width: 1200px) {
     .desktop-menu {
       display: none; /* Ocultar el menú de escritorio */
     }
