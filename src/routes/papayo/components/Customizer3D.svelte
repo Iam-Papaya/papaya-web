@@ -3,6 +3,7 @@
   import * as THREE from 'three';
   import { OrbitControls } from 'three-stdlib';
   import { GLTFLoader } from 'three-stdlib';
+  import { DRACOLoader } from 'three-stdlib';
   import type { GLTF } from 'three-stdlib';
 
   import { partSelections, type PartKey } from '$lib/stores/partSelections';
@@ -54,7 +55,8 @@
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
   let controls: OrbitControls;
-  let loader: GLTFLoader = new GLTFLoader(); // Asegúrate de que esté inicializado aquí
+  let loader: GLTFLoader;
+  let dracoLoader: DRACOLoader;
 
   interface PartPaths {
     HEAD: string;
@@ -150,6 +152,17 @@
         controls.minDistance = 100; // Distancia mínima a la que puede acercarse la cámara
     controls.maxDistance = 300;
 
+    // Inicialización de Loaders
+    loader = new GLTFLoader();
+    dracoLoader = new DRACOLoader();
+
+    // **Importante:** Especifica la ruta a los archivos del decodificador Draco.
+    // Estos archivos suelen estar en una CDN o en tu carpeta 'public'.
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/'); // Ejemplo de CDN
+    dracoLoader.setDecoderConfig({ type: 'js' }); // O 'wasm' si estás usando la versión WASM
+
+    loader.setDRACOLoader(dracoLoader);
+
     await loadDefaultModel();
 
     animate();
@@ -182,5 +195,5 @@
     position: relative;
     display: flex;
     margin: auto;
-  }  }
+  } }
 </style>
