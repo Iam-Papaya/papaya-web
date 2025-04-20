@@ -5,7 +5,6 @@
 
   const phrases = [
     "Nostalgia Reimagined",
-    "Diseño con Alma",
     "Coleccionables Únicos",
     "Ediciones Limitadas",
     "¡Nunca Dejes de Jugar!",
@@ -59,7 +58,7 @@
     ></video>
     <video
       bind:this={videoRef}
-      src="/videos/herovideoV.mkv"
+      src="/videos/herovideoV.mp4"
       autoplay
       muted
       playsinline
