@@ -5,6 +5,7 @@
 
     export let part: PartKey;
     export let options: string[];
+    export let hideLabel: boolean = false;
   
     let isOpen = false;
     let selectedOption = get(partSelections)[part] || options[0] || '';
@@ -40,9 +41,11 @@
   </script>
   
   <div class="rubber-hose-selector">
-    <label for={"select-" + part} class="selector-label">{part.replace('_', ' ')}</label>
+    {#if !hideLabel}
+      <label for={"select-" + part} class="selector-label">{part.replace('_', ' ')}</label>
+    {/if}
     <div class="custom-select" bind:this={selectElement} on:click={toggleOpen}>
-      <span class="selected-value">{selectedOption}</span>
+      <span class="selected-value">{selectedOption.replace('_', ' ')}</span>
       <div class="dropdown-arrow">▼</div>
       {#if isOpen}
         <ul class="options-list">
@@ -57,7 +60,7 @@
               }}
               tabindex="0"
             >
-              {option}
+              {option.replace('_', ' ')}
             </li>
           {/each}
         </ul>

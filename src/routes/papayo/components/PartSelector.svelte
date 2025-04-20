@@ -16,6 +16,8 @@
       LEG_R: [],
       PANTS: []
     };
+
+    let activePart: PartKey = PARTS[0]; // Para la vista mobile
   
     async function fetchOptionsForPart(part: PartKey) {
       const res = await fetch(`/api/models/${part}`);
@@ -31,16 +33,40 @@
     onMount(async () => {
       await Promise.all(PARTS.map(fetchOptionsForPart));
     });
+    
+    function setActivePart(part: PartKey) {
+    activePart = part;
+  }
   
     function updatePart(part: PartKey, value: string) {
       partSelections.update((current) => ({ ...current, [part]: value }));
     }
   </script>
   
-  <div class="bar">
-    {#each PARTS as part}
-      <Selector {part} options={options[part]} />
-    {/each}
+  <div class="selector-container">
+    <div class="bar">
+      {#each PARTS as part}
+        <Selector {part} options={options[part]} />
+      {/each}
+    </div>
+  
+    <div class="mobile-tabs">
+      <div class="tab-bar">
+        {#each PARTS as part}
+          <button
+            class:active={activePart === part}
+            on:click={() => setActivePart(part)}
+          >
+            {part.replace('_', ' ')}
+          </button>
+        {/each}
+      </div>
+      {#if activePart}
+        <div class="selector-container-mobile">
+          <Selector part={activePart} options={options[activePart]} hideLabel={true} />
+        </div>
+      {/if}
+    </div>
   </div>
   
   <style>
@@ -60,26 +86,68 @@
   width: auto;
     }
 
-
-    @media (max-width: 1200px) {
-  .bar {
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    margin-top: 120px;
-    width: 80%;
-    justify-content: flex-start; /* Alinea los elementos al inicio para el scroll */
-    overflow-x: auto; /* Añade scroll horizontal si el contenido se desborda */
-    -webkit-overflow-scrolling: touch; /* Para un scroll suave en iOS */
+    .mobile-tabs {
+    display: none; /* Oculto por defecto en desktop */
   }
 
-  /* Ajusta el ancho del selector en pantallas pequeñas */
-  :global(.rubber-hose-selector .custom-select) {
-    width: 100px;
-  }
 
-  :global(.rubber-hose-selector .selector-label) {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+  @media (max-width: 1200px) {
+    .selector-container {
+      margin-top: 120px;
+    }
+
+    .bar {
+      display: none; /* Ocultar en mobile */
+    }
+
+    .mobile-tabs {
+      display: flex; /* Mostrar en mobile */
+      flex-direction: column;
+      width: 85%; /* Ocupa el 95% del ancho de la pantalla */
+      margin-left: auto; /* Centra horizontalmente */
+      margin-right: auto; /* Centra horizontalmente */
+    }
+
+    .mobile-tabs .tab-bar {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background-color: var(--color-accent-primary-light);
+      border-radius: 0.5rem;
+      padding: 0.25rem;
+      gap: 0.5rem;
+      width: 100%; /* El tab-bar ocupa el ancho del contenedor mobile-tabs */
+    }
+
+    .mobile-tabs .tab-bar button {
+      flex: 1 0 auto; /* Los botones se expanden para llenar el espacio disponible */
+      padding: 0.75rem 0.5rem; /* Reduzco el padding horizontal para más botones visibles */
+      border: none;
+      background: none;
+      font-size: 0.9rem; /* Reduzco un poco la fuente para más botones visibles */
+      font-family: var(--font-heading);
+      cursor: pointer;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+      border-radius: 0.5rem; /* Reduzco un poco el radio del borde */
+      transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+      text-align: center; /* Centra el texto dentro del botón */
+    }
+
+    .mobile-tabs .tab-bar button.active {
+      background-color: var(--color-accent-secondary);
+      color: white;
+    }
+
+    .mobile-tabs .tab-bar button:hover:not(.active) {
+      background-color: rgba(var(--color-accent-secondary-rgb), 0.2);
+    }
+
+    .mobile-tabs .selector-container-mobile {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: var(--color-background-secondary);
+      border-radius: 0.5rem;
+    }
   }
-}
   </style>
