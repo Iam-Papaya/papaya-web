@@ -49,7 +49,7 @@
   <div class="hero-content">
     <video
       bind:this={videoRef}
-      src="/videos/herovideo.mkv"
+      src="/videos/herovideo.mp4"
       autoplay
       muted
       playsinline
