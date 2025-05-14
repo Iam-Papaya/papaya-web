@@ -5,126 +5,82 @@
   import { GLTFLoader } from 'three-stdlib';
   import { DRACOLoader } from 'three-stdlib';
   import type { GLTF } from 'three-stdlib';
-
   import { partSelections, type PartKey } from '$lib/stores/partSelections';
 
-  let currentParts: Record<PartKey, THREE.Group | null> = {
-    HEAD: null,
-    HEAD_TOP: null,
-    TORSO: null,
-    ARM_L: null,
-    ARM_R: null,
-    LEG_L: null,
-    LEG_R: null,
-    PANTS: null
-  };
-
-  partSelections.subscribe(async (selections) => {
-    console.log('[MODEL_LOADER] partSelections subscription triggered:', selections);
-    for (const part in selections) {
-      const key = part as PartKey;
-      const newPath = `/models/${key}/${selections[key]}.glb`;
-      console.log(`[MODEL_LOADER] Attempting to load part '${key}' from path:`, newPath);
-
-      const oldPart = currentParts[key];
-      if (oldPart) {
-        console.log(`[MODEL_LOADER] Removing old part '${key}' from scene.`);
-        scene.remove(oldPart);
-      }
-
-      try {
-        const newGLB = await loadGLBPart(newPath);
-        scene.add(newGLB);
-        currentParts[key] = newGLB;
-        console.log(`[MODEL_LOADER] Loaded and added new part '${key}' to scene.`);
-
-        newGLB.traverse((child) => {
-          if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            child.material.metalness = 0.5;
-            child.material.roughness = 0;
-          }
-        });
-      } catch (error) {
-        console.error(`[MODEL_LOADER] Error loading part '${key}':`, error);
-      }
-    }
-  });
-
   let container: HTMLDivElement;
+
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
   let controls: OrbitControls;
   let loader: GLTFLoader;
-  let dracoLoader: DRACOLoader;
 
-  interface PartPaths {
-    HEAD: string;
-    HEAD_TOP: string;
-    TORSO: string;
-    ARM_L: string;
-    ARM_R: string;
-    LEG_L: string;
-    LEG_R: string;
-    PANTS: string;
-  }
-
-  const partPaths: PartPaths = {
-    HEAD: '/models/HEAD/base.glb',
-    HEAD_TOP: '/models/HEAD_TOP/base.glb',
-    TORSO: '/models/TORSO/base.glb',
-    ARM_L: '/models/ARM_L/base.glb',
-    ARM_R: '/models/ARM_R/base.glb',
-    LEG_L: '/models/LEG_L/base.glb',
-    LEG_R: '/models/LEG_R/base.glb',
-    PANTS: '/models/PANTS/base.glb'
+  // Contenedores por parte para facilitar reemplazo
+  const partGroups: Record<PartKey, THREE.Group> = {
+    HEAD: new THREE.Group(),
+    HEAD_TOP: new THREE.Group(),
+    TORSO: new THREE.Group(),
+    ARM_L: new THREE.Group(),
+    ARM_R: new THREE.Group(),
+    LEG_L: new THREE.Group(),
+    LEG_R: new THREE.Group(),
+    PANTS: new THREE.Group()
   };
 
-  function loadGLBPart(path: string): Promise<THREE.Group> {
-    return new Promise((resolve, reject) => {
-      loader.load(
-        path,
-        (gltf: GLTF) => resolve(gltf.scene),
-        undefined,
-        error => {
-          console.error('[MODEL_LOADER] loadGLBPart error:', path, error);
-          reject(error);
-        }
-      );
-    });
+  const defaultSelections: Record<PartKey, string> = {
+    HEAD: 'base',
+    HEAD_TOP: 'base',
+    TORSO: 'base',
+    ARM_L: 'base',
+    ARM_R: 'base',
+    LEG_L: 'base',
+    LEG_R: 'base',
+    PANTS: 'base'
+  };
+
+  function loadModel(part: PartKey, modelName: string) {
+    const path = `/models/${part}/${modelName}.glb`;
+
+    // Vaciar el contenedor del modelo anterior
+    const group = partGroups[part];
+    group.clear();
+
+    loader.load(
+      path,
+      (gltf: GLTF) => {
+        const model = gltf.scene;
+        group.add(model);
+
+        model.traverse((child) => {
+          if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+            child.material.metalness = 0.5;
+            child.material.roughness = 0.2;
+          }
+        });
+      },
+      undefined,
+      (error) => {
+        console.error(`Error loading model ${path}:`, error);
+      }
+    );
   }
 
-  async function loadDefaultModel() {
-    for (const part of Object.keys(partPaths) as (keyof PartPaths)[]) {
-      const glb = await loadGLBPart(partPaths[part]);
-      scene.add(glb);
-      currentParts[part] = glb; // Asegúrate de actualizar currentParts también aquí
-      glb.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-          child.material.metalness = 0.5;
-          child.material.roughness = 0.1;
-          child.material.envMapIntensity = 2;
-        }
-      });
+  function loadAllDefaults() {
+    for (const part in defaultSelections) {
+      loadModel(part as PartKey, defaultSelections[part as PartKey]);
     }
   }
 
-  onMount(async () => {
-    // Escena
+  onMount(() => {
+    // Configuración básica de escena
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf0f8ff);
 
-    // Cámara
     camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 5000);
     camera.position.set(90, 110, 185);
 
-    // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    // @ts-ignore
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
     container.appendChild(renderer.domElement);
 
     // Luces
@@ -142,28 +98,31 @@
 
     // Controles
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.rotateSpeed = 0.5;
-    controls.enableZoom = true;
-    controls.enablePan = true;
     controls.target.set(0, 75, 0);
-        // Establecer límites de zoom
-        controls.minDistance = 100; // Distancia mínima a la que puede acercarse la cámara
-    controls.maxDistance = 300;
+    controls.update();
 
-    // Inicialización de Loaders
+    // Loaders
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     loader = new GLTFLoader();
-    dracoLoader = new DRACOLoader();
-
-    // **Importante:** Especifica la ruta a los archivos del decodificador Draco.
-    // Estos archivos suelen estar en una CDN o en tu carpeta 'public'.
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/'); // Ejemplo de CDN
-    dracoLoader.setDecoderConfig({ type: 'js' }); // O 'wasm' si estás usando la versión WASM
-
     loader.setDRACOLoader(dracoLoader);
 
-    await loadDefaultModel();
+    // Añadir contenedores de cada parte a la escena
+    for (const group of Object.values(partGroups)) {
+      scene.add(group);
+    }
+
+    // Cargar modelos por defecto
+    loadAllDefaults();
+
+    // Escuchar cambios en selección
+    partSelections.subscribe((newSelections) => {
+      for (const part in newSelections) {
+        const key = part as PartKey;
+        const selectedName = newSelections[key];
+        loadModel(key, selectedName);
+      }
+    });
 
     animate();
   });
@@ -188,12 +147,9 @@
   }
 
   @media (max-width: 1200px) {
-  div {
-    width: 100%;
-    height: 70vh;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    margin: auto;
-  } }
+    div {
+      width: 100%;
+      height: 70vh;
+    }
+  }
 </style>
